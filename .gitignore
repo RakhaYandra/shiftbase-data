@@ -1,0 +1,6 @@
+work/
+*.duckdb
+*.parquet
+*.sql.dump
+__pycache__/
+.venv/
