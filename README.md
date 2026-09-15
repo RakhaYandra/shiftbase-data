@@ -3,6 +3,30 @@
 Pipeline analitik HR untuk database [Shiftbase](https://github.com/RakhaYandra/shiftbase) —
 Python + pandas + DuckDB + matplotlib. Tanpa server, tanpa deploy.
 
+## Purpose, Output & Expectations
+
+**Purpose.** Shift records alone don't tell a manager who is overworked,
+which days are understaffed, or who is chronically late. This pipeline turns
+shifts + attendance into those answers — and cross-checks overtime against
+the API itself.
+
+**Output.** Deterministic demo data (101 shifts + 101 attendance with
+overtime/late cases), 5 marts, 4 charts, and a MATCH cross-check between
+pipeline overtime and `GET /v1/reports/overtime`.
+
+**Expectations.** After `./run.sh`: same numbers on every fresh DB; pipeline
+and API agree within rounding; no dumps or credentials committed.
+
+## Features
+
+| Feature | Description |
+|---|---|
+| Demo data | - Committed `demo_data.sql`: 4 weeks, 5 staff, overtime/late/edge cases (rejected conflicts proven via API, not data). - Purpose: transparent fixture. Output: reviewable rows. |
+| Extract + quality | - Read-only MySQL read; gates for orphan FKs, check_out ≤ check_in, end ≤ start, broken uniques. - Purpose: trustworthy input. Output: quality report. |
+| Marts | - `hours_daily`, `overtime_employee`, `coverage_daily`, `attendance_rate`, `late_arrivals`. - Purpose: HR answers. Output: 5 marts. |
+| Cross-check | - Pipeline overtime vs API overtime must MATCH (< 0.01). - Purpose: two implementations, one truth. Output: MATCH line. |
+| Charts | - 4 PNGs (overtime, coverage, rate, late). - Purpose: visuals without deploy. Output: committable PNGs. |
+
 ## Insight (run demo_data Sep-Okt 2026)
 
 * **Lembur top: Ayu Lestari 5,9 jam** (2 shift 11 jam); Citra 3,5h; Eka 3,0h; Budi 1,9h; Dedi 0,9h
@@ -53,3 +77,15 @@ run.py         # orkestrasi + cross-check API + insight
 * `work/quality_report.json` — 0 errors
 * Cross-check overtime pipeline vs API: MATCH
 * Deterministik: DB fresh → angka sama
+
+## How It Works
+
+```mermaid
+flowchart TD
+    D[demo_data.sql to scratch MySQL] --> E[etl.py: extract 3 tables read-only]
+    E --> Q{quality.py gates}
+    Q -->|fail| X[Stop with report]
+    Q -->|pass| M[marts.py: 5 marts]
+    M --> CC[Cross-check vs /reports/overtime]
+    CC -->|MATCH| C[charts.py: 4 PNG]
+```
