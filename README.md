@@ -1,5 +1,9 @@
 # shiftbase-data
 
+[![ci](https://github.com/RakhaYandra/shiftbase-data/actions/workflows/ci.yml/badge.svg)](https://github.com/RakhaYandra/shiftbase-data/actions)
+
+> Ekosistem: [api](https://github.com/RakhaYandra/shiftbase) · [web](https://github.com/RakhaYandra/shiftbase-web) · [docs](https://github.com/RakhaYandra/shiftbase-docs/releases) · [qa](https://github.com/RakhaYandra/shiftbase-qa) · [data](https://github.com/RakhaYandra/shiftbase-data) · [ops](https://github.com/RakhaYandra/shiftbase-ops)
+
 Pipeline analitik HR untuk database [Shiftbase](https://github.com/RakhaYandra/shiftbase) —
 Python + pandas + DuckDB + matplotlib. Tanpa server, tanpa deploy.
 
